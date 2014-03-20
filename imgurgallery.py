@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-imguralbum.py - Download a whole imgur album in one go.
+imgurgallery.py - Download a whole imgur gallery in one go.
+Based on https://github.com/alexgisby/imgur-album-downloader
 
 Provides both a class and a command line utility in a single script
-to download Imgur albums.
+to download Imgur gallery.
 
 MIT License
 Copyright Alex Gisby <alex@solution10.com>
+Copyright Sean Donovan <sdonovan@cc.gatech.edu>
 """
 
 import sys
@@ -17,49 +19,52 @@ import os
 import math
 
 help_message = '''
-Quickly and easily download an album from Imgur.
+Quickly and easily download a gallery from Imgur.
 
 Format:
-    $ python imguralbum.py [album URL] [destination folder]
+    $ python imgurgallery.py [gallery URL] [destination folder]
 
 Example:
-    $ python imguralbum.py http://imgur.com/a/uOOju#6 /Users/alex/images
+    $ python imgurgallery.py http://imgur.com/gallery/2WlYLZr /Users/alex/images
 
 If you omit the dest folder name, the utility will create one with the same name as the
-album (for example for http://imgur.com/a/uOOju it'll create uOOju/ in the cwd)
+gallery (for example for http://imgur.com/gallery/uOOju it'll create uOOju/ in the cwd)
 
 '''
 
-class ImgurAlbumException(Exception):
+class ImgurGalleryException(Exception):
     def __init__(self, msg=False):
         self.msg = msg
 
 
-class ImgurAlbumDownloader:
-    def __init__(self, album_url):
+class ImgurGalleryDownloader:
+    def __init__(self, gallery_url):
         """
-        Constructor. Pass in the album_url that you want to download.
+        Constructor. Pass in the gallery_url that you want to download.
         """
-        self.album_url = album_url
+        self.gallery_url = gallery_url
 
         # Callback members:
         self.image_callbacks = []
         self.complete_callbacks = []
 
         # Check the URL is actually imgur:
-        match = re.match('(https?)\:\/\/(www\.)?(?:m\.)?imgur\.com/a/([a-zA-Z0-9]+)(#[0-9]+)?', album_url)
+        match = re.match('(https?)\:\/\/(www\.)?(?:m\.)?imgur\.com/gallery/([a-zA-Z0-9]+)?', gallery_url)
         if not match:
-            raise ImgurAlbumException("URL must be a valid Imgur Album")
+            raise ImgurGalleryException("URL must be a valid Imgur Gallery")
 
         self.protocol = match.group(1)
-        self.album_key = match.group(3)
+        self.gallery_key = match.group(3)
+        print "protocol    - ", self.protocol
+        print "gallery key - ", self.gallery_key
 
         # Read the no-script version of the page for all the images:
-        noscriptURL = 'http://imgur.com/a/' + self.album_key + '/noscript'
+        noscriptURL = 'http://imgur.com/gallery/' + self.gallery_key
+# + '/noscript'
         self.response = urllib.urlopen(noscriptURL)
 
         if self.response.getcode() != 200:
-            raise ImgurAlbumException("Error reading Imgur: Error Code %d" % self.response.getcode())
+            raise ImgurGalleryException("Error reading Imgur: Error Code %d" % self.response.getcode())
 
         # Read in the images now so we can get stats and stuff:
         html = self.response.read()
@@ -67,16 +72,16 @@ class ImgurAlbumDownloader:
 
     def num_images(self):
         """
-        Returns the number of images that are present in this album.
+        Returns the number of images that are present in this gallery.
         """
         return len(self.images)
 
-    def album_key(self):
+    def gallery_key(self):
         """
-        Returns the key of this album. Helpful if you plan on generating your own
+        Returns the key of this gallery. Helpful if you plan on generating your own
         folder names.
         """
-        return self.album_key
+        return self.gallery_key
 
     def on_image_download(self, callback):
         """
@@ -97,18 +102,18 @@ class ImgurAlbumDownloader:
 
     def save_images(self, foldername=False):
         """
-        Saves the images from the album into a folder given by foldername.
-        If no foldername is given, it'll use the cwd and the album key.
+        Saves the images from the gallery into a folder given by foldername.
+        If no foldername is given, it'll use the cwd and the gallery key.
         And if the folder doesn't exist, it'll try and create it.
         """
-        # Try and create the album folder:
+        # Try and create the gallery folder:
         if foldername:
-            albumFolder = foldername
+            galleryFolder = foldername
         else:
-            albumFolder = self.album_key
+            galleryFolder = self.gallery_key
 
-        if not os.path.exists(albumFolder):
-            os.makedirs(albumFolder)
+        if not os.path.exists(galleryFolder):
+            os.makedirs(galleryFolder)
 
         # And finally loop through and save the images:
         for (counter, image) in enumerate(self.images, start=1):
@@ -121,7 +126,7 @@ class ImgurAlbumDownloader:
                 int(math.ceil(math.log(len(self.images) + 1, 10))),
                 counter
             )
-            path = os.path.join(albumFolder, prefix + image[1])
+            path = os.path.join(galleryFolder, prefix + image[1])
 
             # Run the callbacks:
             for fn in self.image_callbacks:
@@ -145,8 +150,8 @@ if __name__ == '__main__':
 
     try:
         # Fire up the class:
-        downloader = ImgurAlbumDownloader(args[1])
-        print "Found %d images in album" % downloader.num_images()
+        downloader = ImgurGalleryDownloader(args[1])
+        print "Found %d images in gallery" % downloader.num_images()
 
         # Called when an image is about to download:
         def print_image_progress(index, url, dest):
@@ -162,15 +167,15 @@ if __name__ == '__main__':
 
         # Work out if we have a foldername or not:
         if len(args) == 3:
-            albumFolder = args[2]
+            galleryFolder = args[2]
         else:
-            albumFolder = False
+            gallleryFolder = False
 
         # Enough talk, let's save!
-        downloader.save_images(albumFolder)
+        downloader.save_images(galleryFolder)
         exit()
 
-    except ImgurAlbumException as e:
+    except ImgurGalleryException as e:
         print "Error: " + e.msg
         print ""
         print "How to use"
