@@ -55,9 +55,7 @@ class ImgurGalleryDownloader:
 
         self.protocol = match.group(1)
         self.gallery_key = match.group(3)
-        print "protocol    - ", self.protocol
-        print "gallery key - ", self.gallery_key
-
+        
         # Read the no-script version of the page for all the images:
         noscriptURL = 'http://imgur.com/gallery/' + self.gallery_key
 # + '/noscript'
