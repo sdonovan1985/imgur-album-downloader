@@ -1,7 +1,9 @@
-# imgur Album Downloader
+# imgur Gallery Downloader
 
 This is a simple Python script that contains a class and command line interface that
-allows you to download ann images at full resolution in an imgur album, all at once.
+allows you to download ann images at full resolution in an imgur gallery, all at once.
+
+This is based off of the Imgur Album Downloader from Alex Gisby (https://github.com/alexgisby/imgur-album-downloader) and works with galleries only. 
 
 ## Requirements
 
@@ -9,24 +11,24 @@ Python > 2.6
 
 ## Command Line Usage
 
-	$ python imguralbum.py [album URL] [folder to save to]
+	$ python imgurgallery.py [gallery URL] [folder to save to]
 
-Download all images from an album into the folder /Users/alex/images/downloaded
+Download all images from an gallery into the folder /Users/alex/images/downloaded
 
-	$ python imguralbum.py http://imgur.com/a/uOOju /Users/alex/images/downloaded
+	$ python imgurgallery.py http://imgur.com/gallery/2WlYLZr /Users/alex/images/downloaded
 	
-Downloads all images and puts them into an album in the current directory called "uOOju"
+Downloads all images and puts them into an gallery in the current directory called "2WlYLZr"
 
-	$ python imguralbum.py http://imgur.com/a/uOOju
+	$ python imgurgallery.py http://imgur.com/gallery/2WlYLZr
 
 
 ## Class Usage
 
-The class allows you to download imgur albums in your own Python programs without going
+The class allows you to download imgur gallery in your own Python programs without going
 through the command line. Here's an example of it's usage:
 
 ### Example:
-	downloader = ImgurAlbumDownloader("http://imgur.com/a/uOOju")
+	downloader = ImgurGalleryDownloader("http://imgur.com/gallery/2WlYLZr")
 	print "This albums has %d images" % downloader.num_images()
 	downloader.save_images()
 
@@ -56,4 +58,5 @@ With [Contributions](https://github.com/alexgisby/imgur-album-downloader/graphs/
 
 - [Lemuel Formacil](https://github.com/lemuelf)
 - [Vikraman Choudhury](https://github.com/vikraman)
-	
+
+Modified for Gallery useage by [Sean Donovan](https://github.com/sdonovan1985)
