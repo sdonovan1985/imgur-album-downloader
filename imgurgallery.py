@@ -55,7 +55,7 @@ class ImgurGalleryDownloader:
 
         self.protocol = match.group(1)
         self.gallery_key = match.group(3)
-        
+
         # Read the no-script version of the page for all the images:
         noscriptURL = 'http://imgur.com/gallery/' + self.gallery_key
 # + '/noscript'
@@ -124,14 +124,15 @@ class ImgurGalleryDownloader:
                 int(math.ceil(math.log(len(self.images) + 1, 10))),
                 counter
             )
-            path = os.path.join(galleryFolder, prefix + image[1])
+#            path = os.path.join(galleryFolder, prefix + image[1])
+            path = os.path.join(galleryFolder, image[1])
+
+            # Actually download the thing
+            urllib.urlretrieve(image_url, path)
 
             # Run the callbacks:
             for fn in self.image_callbacks:
                 fn(counter, image_url, path)
-
-            # Actually download the thing
-            urllib.urlretrieve(image_url, path)
 
         # Run the complete callbacks:
         for fn in self.complete_callbacks:
