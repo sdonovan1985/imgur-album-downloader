@@ -59,4 +59,12 @@ With [Contributions](https://github.com/alexgisby/imgur-album-downloader/graphs/
 - [Lemuel Formacil](https://github.com/lemuelf)
 - [Vikraman Choudhury](https://github.com/vikraman)
 
-Modified for Gallery useage by [Sean Donovan](https://github.com/sdonovan1985)
+# Modifications
+Modified for Gallery useage by [Sean Donovan](https://github.com/sdonovan1985).
+
+In addition to the gallery modifications, there is also a scraper that looks through a copy of 
+Imgur's homepage. This is in the file imgurscraper.py.
+
+Requires code from [entropy-calculation](https://github.com/sdonovan1985/entropy-calculation)
+to fully function. imgurscraper.py will not run without this code, which is not included.
+
