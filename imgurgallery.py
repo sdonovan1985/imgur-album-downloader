@@ -168,7 +168,7 @@ if __name__ == '__main__':
         if len(args) == 3:
             galleryFolder = args[2]
         else:
-            gallleryFolder = False
+            galleryFolder = False
 
         # Enough talk, let's save!
         downloader.save_images(galleryFolder)
